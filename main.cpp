@@ -5,55 +5,12 @@
 #include <fstream>
 #include <sstream>
 
+#include "Agent.h"
+#include "Human.h"
+#include "AgentOne.h"
+#include "AgentTwo.h"
+
 using namespace std;
-
-class Agent
-{
-public:
-    Agent() { }
-
-    void setWordLength(int length) {
-        wordLength = length;
-        for(int i = 0; i < length; i++) {
-            progress += '?';
-        }
-    }
-
-    int getCorrectChars() {
-        return correctChars;
-    }
-
-    void decrementLives() {
-        lives--;
-    }
-    void setLives(int l) {
-        lives = l;
-    }
-    int getLives() {
-        return lives;
-    }
-
-    int getGuessCount() {
-        return guessCounter;
-    }
-
-    virtual char makeGuess() {
-        cout << "Base agent making guess" << endl;
-    }
-    void updateProgress(int index, char letter) {
-        progress[index] = letter;
-        correctChars++;
-    }
-    string getProgress() {
-        return progress;
-    }
-protected:
-    string progress;
-    int wordLength {0};
-    int correctChars {0};
-    int lives {0};
-    int guessCounter {0};
-};
 
 // ------ Global Variables
 
@@ -62,70 +19,6 @@ string word;
 Agent *agent;
 bool debug = true;
 
-// ------ Class Definitions
-
-class Human : public Agent
-{
-public:
-    char makeGuess() {
-        char guess;
-        cout << "You have " << lives << " remaining guesses." << endl;
-        cout << progress << endl;
-        cout << "Make a guess: ";
-        cin >> guess;
-
-        guessCounter++;
-        return guess;
-    }
-};
-
-class AgentOne : public Agent
-{
-public:
-    char makeGuess() {
-        guessCounter++;
-        return (rand() % 26) + 'a';
-    }
-};
-
-vector<pair<char, float>> read_csv_pair(string filename) {
-    vector<pair<char, float>> result;
-
-    ifstream myFile(filename);
-    if(!myFile.is_open()) throw runtime_error("Could not open file");
-
-    // Helper vars
-    string line;
-    string val;
-
-    // Read data, line by line
-    while(getline(myFile, line))
-    {
-        char c = line.substr(0, 1)[0];
-        float f = stof(line.substr(2));
-        result.push_back(make_pair(c, f));
-    }
-
-    // Close file
-    myFile.close();
-
-    return result;
-}
-
-class AgentTwo : public Agent
-{
-public:
-    AgentTwo() {
-        letterDist = read_csv_pair("letter-dist.csv");
-    }
-    char makeGuess() {
-        char guess = letterDist[guessCounter].first;
-        guessCounter++;
-        return guess;
-    }
-private:
-    vector<pair<char, float>> letterDist;
-};
 
 
 // ------ Program Functions
