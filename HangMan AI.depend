@@ -1,6 +1,0 @@
-# depslib dependency file v1.0
-1620461007 source:d:\documents\programming\c++\hangman ai\main.cpp
-	<iostream>
-	<stdlib.h>
-	<time.h>
-
