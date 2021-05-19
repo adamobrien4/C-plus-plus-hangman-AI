@@ -10,8 +10,8 @@ class CSVReader
 {
     public:
         CSVReader();
-        static vector<string> readSingleCSV(string filename);
-        static vector<pair<char, float>> readCSVPair(string filename);
+        vector<string> readSingleCSV(string filename);
+        vector<pair<char, float>> readCSVPair(string filename);
 
     protected:
 

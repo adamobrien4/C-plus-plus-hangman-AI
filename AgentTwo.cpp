@@ -9,7 +9,8 @@
 using namespace std;
 
 AgentTwo::AgentTwo() {
-    letterDist = CSVReader::readCSVPair("letter-dist.csv");
+    CSVReader* reader = new CSVReader();
+    letterDist = reader->readCSVPair("letter-dist.csv");
 }
 
 char AgentTwo::makeGuess() {
