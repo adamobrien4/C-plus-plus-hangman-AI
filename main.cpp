@@ -10,6 +10,8 @@
 #include "AgentOne.h"
 #include "AgentTwo.h"
 
+#include "CSVReader.h"
+
 using namespace std;
 
 // ------ Global Variables
@@ -19,50 +21,7 @@ string word;
 Agent *agent;
 bool debug = true;
 
-
-
 // ------ Program Functions
-
-// TODO: Make generic read_csv function to handle different types of values
-vector<string> read_csv(string filename){
-    vector<string> result;
-
-    ifstream myFile(filename);
-    if(!myFile.is_open()) throw runtime_error("Could not open file");
-
-    // Helper vars
-    string line, colname;
-    string val;
-
-    // Read data, line by line
-    while(getline(myFile, line))
-    {
-        // Create a stringstream of the current line
-        stringstream ss(line);
-
-
-        // Keep track of the current column index
-        int colIdx = 0;
-
-        // Extract each integer
-        while(ss >> val){
-
-            // Add the current integer to the 'colIdx' column's values vector
-            result.push_back(val);
-
-            // If the next token is a comma, ignore it and move on
-            if(ss.peek() == ',') ss.ignore();
-
-            // Increment the column index
-            colIdx++;
-        }
-    }
-
-    // Close file
-    myFile.close();
-
-    return result;
-}
 
 bool guess_letter(char letter) {
 
@@ -94,7 +53,7 @@ int main()
 {
     srand(time(NULL));
 
-    words = read_csv("english_words.csv");
+    words = CSVReader::readSingleCSV("english_words.csv");
     word = words[rand() % words.size()];
 
     // Load CSV file containing letter distribution from https://en.wikipedia.org/wiki/Letter_frequency - Relative frequency in the English language on Dictionaries.

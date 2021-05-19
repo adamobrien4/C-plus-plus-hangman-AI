@@ -20,9 +20,7 @@ public:
 
     void updateProgress(int index, char letter);
 
-    virtual char makeGuess() {
-        return '!';
-    }
+    virtual char makeGuess() = 0;
 protected:
     std::string progress;
     int wordLength {0};
