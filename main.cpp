@@ -14,11 +14,28 @@
 
 using namespace std;
 
+
+// Agent Descriptions
+
+/*
+
+Author: Adam O'Brien
+
+- AgentOne -
+ + This agent guesses letters randomly when trying to guess the work
+
+- AgentTwo -
+ + This agent guesses letters based on their commonality of their use based on a their appearance in the dictionary
+ + E.g. 'a' most common, 'i' second most common etc.
+
+*/
+
 // ------ Global Variables
 
 vector<string> words;
 string word;
 Agent *agent;
+CSVReader *reader;
 bool debug = true;
 
 // ------ Program Functions
@@ -53,7 +70,9 @@ int main()
 {
     srand(time(NULL));
 
-    words = CSVReader::readSingleCSV("english_words.csv");
+    reader = new CSVReader();
+
+    words = reader->readSingleCSV("english_words.csv");
     word = words[rand() % words.size()];
 
     // Load CSV file containing letter distribution from https://en.wikipedia.org/wiki/Letter_frequency - Relative frequency in the English language on Dictionaries.
@@ -64,7 +83,6 @@ int main()
     cout << "0: Player vs. Computer" << endl;
     cout << "1: Agent 1" << endl;
     cout << "2: Agent 2" << endl;
-    cout << "3: Agent 3" << endl;
     cin >> game_mode;
 
     switch(game_mode) {
@@ -87,9 +105,6 @@ int main()
                 cout << "Mode 2" << endl;
                 break;
             }
-        case 3:
-            cout << "Mode 3" << endl;
-            break;
         default:
             cout << "Invalid game mode selected.";
             return 0;

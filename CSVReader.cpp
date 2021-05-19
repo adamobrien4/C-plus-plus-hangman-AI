@@ -1,8 +1,11 @@
 #include "CSVReader.h"
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 CSVReader::CSVReader() {}
 
-static vector<string> CSVReader::readSingleCSV(string filename) {
+vector<string> CSVReader::readSingleCSV(string filename) {
     vector<string> result;
 
     ifstream myFile(filename);
@@ -42,7 +45,7 @@ static vector<string> CSVReader::readSingleCSV(string filename) {
     return result;
 }
 
-static vector<pair<char, float>> CSVReader::readCSVPair(string filename) {
+vector<pair<char, float>> CSVReader::readCSVPair(string filename) {
   vector<pair<char, float>> result;
 
   ifstream myFile(filename);
