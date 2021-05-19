@@ -5,91 +5,127 @@
 #include <fstream>
 #include <sstream>
 
+#include "Agent.h"
+#include "Human.h"
+#include "AgentOne.h"
+#include "AgentTwo.h"
+
+#include "CSVReader.h"
+
 using namespace std;
 
-vector<string> read_csv(string filename){
-    vector<string> result;
 
-    // Create an input filestream
-    ifstream myFile(filename);
+// Agent Descriptions
 
-    // Make sure the file is open
-    if(!myFile.is_open()) throw runtime_error("Could not open file");
+/*
 
-    // Helper vars
-    string line, colname;
-    string val;
+Author: Adam O'Brien
 
-    // Read data, line by line
-    while(getline(myFile, line))
-    {
-        // Create a stringstream of the current line
-        stringstream ss(line);
+- AgentOne -
+ + This agent guesses letters randomly when trying to guess the work
 
+- AgentTwo -
+ + This agent guesses letters based on their commonality of their use based on a their appearance in the dictionary
+ + E.g. 'a' most common, 'i' second most common etc.
 
-        // Keep track of the current column index
-        int colIdx = 0;
+*/
 
-        // Extract each integer
-        while(ss >> val){
+// ------ Global Variables
 
-            // Add the current integer to the 'colIdx' column's values vector
-            result.push_back(val);
+vector<string> words;
+string word;
+Agent *agent;
+CSVReader *reader;
+bool debug = true;
 
-            // If the next token is a comma, ignore it and move on
-            if(ss.peek() == ',') ss.ignore();
+// ------ Program Functions
 
-            // Increment the column index
-            colIdx++;
+bool guess_letter(char letter) {
+
+    if(debug) {
+        cout << "Guess was " << letter << endl;
+    }
+
+    bool correct_guess = false;
+    for(int i = 0; i < word.length(); i++) {
+        if(word[i] == letter) {
+            agent->updateProgress(i, letter);
+            correct_guess = true;
         }
     }
 
-    // Close file
-    myFile.close();
+    if(!correct_guess) {
+        agent->decrementLives();
+    }
 
-    return result;
+    if(agent->getCorrectChars() == word.size()) {
+        return true;
+    }
+    return false;
 }
+
+// ------ Main Function
 
 int main()
 {
     srand(time(NULL));
 
-    vector<string> words = read_csv("english_words.csv");
-    string word = words[rand() % words.size()];
+    reader = new CSVReader();
 
-    // Holds how much of the word the user has guessed correctly
-    string progress (word.length(), '?');
-    int correct_chars = 0;
-    char guess;
-    int lives = 6;
+    words = reader->readSingleCSV("english_words.csv");
+    word = words[rand() % words.size()];
 
-    while(lives > 0) {
-        cout << "----------------------------------------" << endl;
-        cout << "Remaining Guesses: " << lives << endl;
-        cout << progress << endl;
-        cout << "Guess a letter: ";
-        cin >> guess;
+    // Load CSV file containing letter distribution from https://en.wikipedia.org/wiki/Letter_frequency - Relative frequency in the English language on Dictionaries.
 
-        bool correct_guess = false;
-        for(int i = 0; i < word.length(); i++) {
-            if(word[i] == guess) {
-                progress[i] = guess;
-                correct_chars++;
-                correct_guess = true;
+    int game_mode;
+
+    cout << "Game Mode:" << endl;
+    cout << "0: Player vs. Computer" << endl;
+    cout << "1: Agent 1" << endl;
+    cout << "2: Agent 2" << endl;
+    cin >> game_mode;
+
+    switch(game_mode) {
+        case 0:
+            {
+                // Holds how much of the word the user has guessed correctly
+                agent = new Human();
+                cout << "Mode 0" << endl;
+                break;
             }
-        }
+        case 1:
+            {
+                agent = new AgentOne();
+                cout << "Mode 1" << endl;
+                break;
+            }
+        case 2:
+            {
+                agent = new AgentTwo();
+                cout << "Mode 2" << endl;
+                break;
+            }
+        default:
+            cout << "Invalid game mode selected.";
+            return 0;
+    }
 
-        if(!correct_guess) {
-            lives--;
-        }
+    agent->setWordLength(word.length());
+    agent->setLives(8);
 
-        if(correct_chars == word.size()) {
-            cout << "Congratulations! The word was " << word << endl;
+    cout << "Starting Game" << endl;
+
+    while(agent->getLives() > 0) {
+        if(guess_letter(agent->makeGuess())) {
+            cout << "The word was " << word << endl;
+            cout << "Congratulations! Game completed in " << agent->getGuessCount() << " guesses."  << endl;
+            cout << "Agent's progress " << agent->getProgress() << endl;
             return 0;
         }
     }
 
     cout << "The word was " << word << ". Game Over!" << endl;
+    cout << "Agent's progress " << agent->getProgress() << endl;
 
     return 0;
 }

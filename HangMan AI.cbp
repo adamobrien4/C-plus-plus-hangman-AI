@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="./" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="./" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -32,6 +34,18 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Agent.cpp" />
+		<Unit filename="Agent.h" />
+		<Unit filename="AgentOne.cpp" />
+		<Unit filename="AgentOne.h" />
+		<Unit filename="AgentThree.cpp" />
+		<Unit filename="AgentThree.h" />
+		<Unit filename="AgentTwo.cpp" />
+		<Unit filename="AgentTwo.h" />
+		<Unit filename="CSVReader.cpp" />
+		<Unit filename="CSVReader.h" />
+		<Unit filename="Human.cpp" />
+		<Unit filename="Human.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
